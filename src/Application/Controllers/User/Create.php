@@ -2,6 +2,7 @@
 
 namespace MoneyTransaction\Application\Controllers\User;
 
+use MoneyTransaction\Application\Controllers\Wallet\Create as CreateWallet;
 use MoneyTransaction\Application\Resources\User\UserResponse;
 use MoneyTransaction\Domain\Enums\User\UserType;
 use MoneyTransaction\Domain\Exceptions\User\UserAlreadyExistsException;
@@ -18,6 +19,7 @@ class Create
 {
     public function __construct(
         private readonly UserCreator $userCreator,
+        private readonly CreateWallet $createWallet,
         private readonly UuidGeneratorInterface $uuidGenerator
     ) {
     }
@@ -36,6 +38,7 @@ class Create
         $userType = UserType::fromValue($type);
 
         $user = $this->userCreator->createUser($userId, $userName, $userEmail, $userCpf, $userPassword, $userType);
+        $this->createWallet->createWallet($userId);
 
         return UserResponse::fromUser($user);
     }

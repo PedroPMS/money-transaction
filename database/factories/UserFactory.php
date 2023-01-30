@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use MoneyTransaction\Domain\Enums\User\UserType;
 use MoneyTransaction\Infrastructure\Models\UserModel;
-use MoneyTransction\Domain\Enums\User\UserType;
 
 class UserFactory extends Factory
 {
