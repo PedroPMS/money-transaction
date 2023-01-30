@@ -7,8 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Picpay\Shared\Domain\Bus\Command\CommandHandlerInterface;
-use Picpay\Shared\Domain\Bus\Command\CommandInterface;
+use MoneyTransaction\Shared\Domain\Bus\Command\CommandHandlerInterface;
+use MoneyTransaction\Shared\Domain\Bus\Command\CommandInterface;
 
 class CommandJob implements ShouldQueue
 {

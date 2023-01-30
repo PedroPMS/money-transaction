@@ -18,7 +18,7 @@ help:
 
 build:
 	    @docker-compose up -d --build
-	    @docker exec -it picpay-api php artisan key:generate
+	    @docker exec -it money-app php artisan key:generate
 up:
 	    @docker-compose up -d
 down:
@@ -26,15 +26,15 @@ down:
 test:
 	    @$(eval testsuite ?= 'all')
 	    @$(eval filter ?= '.')
-	    @docker exec -it picpay-api vendor/bin/phpunit --filter=$(filter) --stop-on-failure
+	    @docker exec -it money-app vendor/bin/phpunit --filter=$(filter) --stop-on-failure
 migrate:
-	    @docker exec -it picpay-api php artisan migrate --database=testing --seed
-	    @docker exec -it picpay-api php artisan migrate --seed
+	    @docker exec -it money-app php artisan migrate --database=testing --seed
+	    @docker exec -it money-app php artisan migrate --seed
 
 push:
 	    @docker push ${IMAGEFULLNAME}
 
 docs:
-	    @docker exec -it picpay-api php artisan scribe:generate
+	    @docker exec -it money-app php artisan scribe:generate
 
 all: build push

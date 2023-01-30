@@ -7,8 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Picpay\Shared\Domain\Bus\Event\AbstractDomainEvent;
-use Picpay\Shared\Domain\Bus\Event\DomainEventSubscriberInterface;
+use MoneyTransaction\Shared\Domain\Bus\Event\AbstractDomainEvent;
+use MoneyTransaction\Shared\Domain\Bus\Event\DomainEventSubscriberInterface;
 
 class EventJob implements ShouldQueue
 {

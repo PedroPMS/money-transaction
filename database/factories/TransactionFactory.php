@@ -4,10 +4,10 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Picpay\Domain\Enums\Transaction\TransactionStatus;
-use Picpay\Infrastructure\Models\TransactionModel;
-use Picpay\Infrastructure\Models\UserModel;
-use Picpay\Infrastructure\Models\WalletModel;
+use MoneyTransaction\Domain\Enums\Transaction\TransactionStatus;
+use MoneyTransaction\Infrastructure\Models\TransactionModel;
+use MoneyTransaction\Infrastructure\Models\UserModel;
+use MoneyTransaction\Infrastructure\Models\WalletModel;
 
 class TransactionFactory extends Factory
 {
