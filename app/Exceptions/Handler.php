@@ -3,7 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Picpay\Shared\Domain\DomainException;
+use MoneyTransaction\Shared\Domain\DomainException;
 
 class Handler extends ExceptionHandler
 {
