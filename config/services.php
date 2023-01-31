@@ -37,4 +37,10 @@ return [
         'autorized_message' => env('TRANSACTION_AUTORIZED_MESSAGE', 'Autorizado'),
     ],
 
+    'transaction_notifier' => [
+        'base_url' => env('TRANSACTION_NOTIFIER_BASE_URL', 'http://o4d9z.mocklab.io/'),
+        'notify_url' => env('TRANSACTION_NOTIFIER_URL', '8fafdd68-a090-496f-8c9a-3442cf30dae6'),
+        'success_message' => env('TRANSACTION_NOTIFIER_MESSAGE', 'Success'),
+    ],
+
 ];
