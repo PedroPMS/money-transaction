@@ -3,6 +3,7 @@
 namespace MoneyTransaction\Application\Controllers\Transaction;
 
 use MoneyTransaction\Domain\Entities\Transaction;
+use MoneyTransaction\Domain\Entities\User;
 use MoneyTransaction\Domain\Enums\Transaction\TransactionStatus;
 use MoneyTransaction\Domain\Exceptions\Transaction\PayerDoesntHaveEnoughBalanceException;
 use MoneyTransaction\Domain\Exceptions\Transaction\ShopkeeperCantStartTransactionException;
@@ -33,6 +34,9 @@ class Create
     }
 
     /**
+     * @throws PayerDoesntHaveEnoughBalanceException
+     * @throws ShopkeeperCantStartTransactionException
+     * @throws TransactionUnautorizedException
      * @throws UserNotFoundException
      * @throws WalletNotFoundException
      */
@@ -41,13 +45,25 @@ class Create
         $transaction = $this->persistTransaction($payerId, $payeeId, $value);
         $payer = $this->userFinder->findUser(UserId::fromValue($transaction->payerId));
 
+        $this->validateTransaction($payer, $transaction);
+        $this->transfer->transferFunds($transaction);
+        $this->transactionUpdater->updateTransactionStatus($transaction->id, TransactionStatus::SUCCEEDED);
+    }
+
+    /**
+     * @throws ShopkeeperCantStartTransactionException
+     * @throws PayerDoesntHaveEnoughBalanceException
+     * @throws TransactionUnautorizedException
+     * @throws WalletNotFoundException
+     */
+    private function validateTransaction(User $payer, Transaction $transaction): void
+    {
         try {
             $this->transactionValidator->validateTransaction($payer, $transaction);
-            $this->transfer->transferFunds($transaction);
-            $this->transactionUpdater->updateTransactionStatus($transaction->id, TransactionStatus::SUCCEEDED);
         } catch (PayerDoesntHaveEnoughBalanceException|ShopkeeperCantStartTransactionException|TransactionUnautorizedException $exception) {
             $this->transactionUpdater->updateTransactionStatus($transaction->id, TransactionStatus::REJECTED);
             $this->notifier->dispatchTransactionNotification();
+            throw $exception;
         }
     }
 

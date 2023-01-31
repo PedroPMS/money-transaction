@@ -17,7 +17,7 @@ class UserFactory extends Factory
             'id' => Str::orderedUuid()->toString(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'cpf' => '123.123.123-12',
+            'cpf' => '123.123.123-'.fake()->randomNumber(2),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'type' => UserType::COMMON->value,
         ];
