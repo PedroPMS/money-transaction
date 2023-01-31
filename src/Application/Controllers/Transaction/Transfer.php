@@ -5,6 +5,7 @@ namespace MoneyTransaction\Application\Controllers\Transaction;
 use Exception;
 use MoneyTransaction\Domain\Entities\Transaction;
 use MoneyTransaction\Domain\Exceptions\Wallet\WalletNotFoundException;
+use MoneyTransaction\Domain\Services\Transaction\NotifyTransaction;
 use MoneyTransaction\Domain\Services\Wallet\WalletAmountCreditor;
 use MoneyTransaction\Domain\Services\Wallet\WalletAmountDebitor;
 use MoneyTransaction\Shared\Domain\DbTransactionInterface;
@@ -12,6 +13,7 @@ use MoneyTransaction\Shared\Domain\DbTransactionInterface;
 class Transfer
 {
     public function __construct(
+        private readonly NotifyTransaction $notifier,
         private readonly WalletAmountDebitor $walletDebitor,
         private readonly WalletAmountCreditor $walletCreditor,
         private readonly DbTransactionInterface $dbTransaction,
@@ -35,6 +37,6 @@ class Transfer
             throw $exception;
         }
 
-        // todo send email
+        $this->notifier->dispatchTransactionNotification();
     }
 }

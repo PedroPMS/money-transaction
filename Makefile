@@ -37,4 +37,7 @@ push:
 docs:
 	    @docker exec -it money-app php artisan scribe:generate
 
+lint:
+		@docker exec -it money-app vendor/bin/pint
+
 all: build push

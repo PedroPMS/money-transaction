@@ -9,6 +9,7 @@ use MoneyTransaction\Domain\Exceptions\Transaction\ShopkeeperCantStartTransactio
 use MoneyTransaction\Domain\Exceptions\Transaction\TransactionUnautorizedException;
 use MoneyTransaction\Domain\Exceptions\User\UserNotFoundException;
 use MoneyTransaction\Domain\Exceptions\Wallet\WalletNotFoundException;
+use MoneyTransaction\Domain\Services\Transaction\NotifyTransaction;
 use MoneyTransaction\Domain\Services\Transaction\TransactionCreator;
 use MoneyTransaction\Domain\Services\Transaction\TransactionUpdater;
 use MoneyTransaction\Domain\Services\Transaction\TransactionValidate;
@@ -21,12 +22,13 @@ use MoneyTransaction\Shared\Domain\UuidGeneratorInterface;
 class Create
 {
     public function __construct(
+        private readonly Transfer $transfer,
+        private readonly UserFind $userFinder,
+        private readonly NotifyTransaction $notifier,
         private readonly UuidGeneratorInterface $uuidGenerator,
         private readonly TransactionCreator $transactionCreator,
-        private readonly UserFind $userFinder,
         private readonly TransactionValidate $transactionValidator,
         private readonly TransactionUpdater $transactionUpdater,
-        private readonly Transfer $transfer,
     ) {
     }
 
@@ -45,7 +47,7 @@ class Create
             $this->transactionUpdater->updateTransactionStatus($transaction->id, TransactionStatus::SUCCEEDED);
         } catch (PayerDoesntHaveEnoughBalanceException|ShopkeeperCantStartTransactionException|TransactionUnautorizedException $exception) {
             $this->transactionUpdater->updateTransactionStatus($transaction->id, TransactionStatus::REJECTED);
-            //todo send email
+            $this->notifier->dispatchTransactionNotification();
         }
     }
 
