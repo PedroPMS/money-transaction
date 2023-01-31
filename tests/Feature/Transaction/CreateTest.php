@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Mockery;
 use Mockery\MockInterface;
 use MoneyTransaction\Domain\Enums\Transaction\TransactionStatus;
+use MoneyTransaction\Domain\Exceptions\Transaction\ShopkeeperCantStartTransactionException;
 use MoneyTransaction\Domain\Services\Transaction\TransactionNotifier;
 use MoneyTransaction\Domain\Services\Transaction\TransactionValidate;
 use MoneyTransaction\Infrastructure\Models\TransactionModel;
@@ -77,5 +78,66 @@ class CreateTest extends TestCase
         );
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    public function testItRejectANewTransaction()
+    {
+        $this->instance(
+            TransactionValidate::class,
+            Mockery::mock(TransactionValidate::class, function (MockInterface $mock) {
+                $mock->shouldReceive('validateTransaction')
+                    ->once()
+                    ->andThrows(ShopkeeperCantStartTransactionException::class);
+            })
+        );
+
+        $this->instance(
+            TransactionNotifier::class,
+            Mockery::mock(TransactionNotifier::class, function (MockInterface $mock) {
+                $mock->shouldReceive('sendNotification')
+                    ->once()
+                    ->andReturn();
+            })
+        );
+
+        /** @var TransactionModel $transaction */
+        $transaction = TransactionModel::factory()->make();
+        $oldPayerBalance = $transaction->payer->wallet->amount;
+        $oldPayeeBalance = $transaction->payee->wallet->amount;
+
+        $this->postJson(
+            '/transaction',
+            [
+                'payer_id' => $transaction->payer_id,
+                'payee_id' => $transaction->payee_id,
+                'value' => $transaction->value,
+            ]
+        );
+
+        $this->assertDatabaseMissing(
+            'wallet',
+            [
+                'user_id' => $transaction->payer_id,
+                'amount' => $oldPayerBalance - $transaction->value,
+            ]
+        );
+
+        $this->assertDatabaseMissing(
+            'wallet',
+            [
+                'user_id' => $transaction->payee_id,
+                'amount' => $oldPayeeBalance + $transaction->value,
+            ]
+        );
+
+        $this->assertDatabaseMissing(
+            'transactions',
+            [
+                'payer_id' => $transaction->payer_id,
+                'payee_id' => $transaction->payee_id,
+                'value' => $transaction->value,
+                'status' => TransactionStatus::SUCCEEDED->value,
+            ],
+        );
     }
 }
