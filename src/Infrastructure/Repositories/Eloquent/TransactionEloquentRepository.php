@@ -41,6 +41,12 @@ final class TransactionEloquentRepository implements TransactionRepository
         $transactionModel->update(['status' => $newStatus->value]);
     }
 
+    public function markAsNotified(TransactionId $transactionId, string $notifiedAt): void
+    {
+        $transactionModel = $this->model->newQuery()->find($transactionId->value());
+        $transactionModel->update(['notified_at' => $notifiedAt]);
+    }
+
     /**
      * @throws TransactionStatusException
      */

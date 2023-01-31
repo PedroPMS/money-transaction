@@ -62,7 +62,7 @@ class Create
             $this->transactionValidator->validateTransaction($payer, $transaction);
         } catch (PayerDoesntHaveEnoughBalanceException|ShopkeeperCantStartTransactionException|TransactionUnautorizedException $exception) {
             $this->transactionUpdater->updateTransactionStatus($transaction->id, TransactionStatus::REJECTED);
-            $this->notifier->dispatchTransactionNotification();
+            $this->notifier->dispatchTransactionNotification($transaction->id);
             throw $exception;
         }
     }

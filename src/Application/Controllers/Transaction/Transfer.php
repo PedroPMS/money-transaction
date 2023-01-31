@@ -37,6 +37,6 @@ class Transfer
             throw $exception;
         }
 
-        $this->notifier->dispatchTransactionNotification();
+        $this->notifier->dispatchTransactionNotification($transaction->id);
     }
 }

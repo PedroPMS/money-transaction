@@ -13,4 +13,6 @@ interface TransactionRepository
     public function create(Transaction $transaction): void;
 
     public function updateStatus(TransactionId $transactionId, TransactionStatus $newStatus): void;
+
+    public function markAsNotified(TransactionId $transactionId, string $notifiedAt): void;
 }

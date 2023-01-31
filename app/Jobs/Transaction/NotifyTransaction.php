@@ -8,17 +8,18 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use MoneyTransaction\Application\Controllers\Transaction\Notify;
+use MoneyTransaction\Domain\ValueObjects\Transaction\TransactionId;
 
 class NotifyTransaction implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct()
+    public function __construct(private readonly TransactionId $transactionId)
     {
     }
 
     public function handle(Notify $notifier): void
     {
-        $notifier->notify();
+        $notifier->notify($this->transactionId);
     }
 }
