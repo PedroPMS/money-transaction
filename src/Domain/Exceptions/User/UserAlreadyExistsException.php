@@ -8,7 +8,7 @@ use Throwable;
 
 final class UserAlreadyExistsException extends DomainException
 {
-    public function __construct($message = '', $code = 422, Throwable $previous = null)
+    public function __construct(string $message = '', int $code = 422, Throwable $previous = null)
     {
         $message = '' === $message ? 'User already exists' : $message;
 

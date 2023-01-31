@@ -27,6 +27,7 @@ final class UsersResponse implements ResponseInterface
         return new self($userResponses);
     }
 
+    /** @return array<array<string, int|string>> */
     public function jsonSerialize(): array
     {
         return array_map(function (UserResponse $userResponse) {

@@ -31,7 +31,6 @@ class FindTest extends TestCase
 
     public function testItTryToFindAInexistentUser()
     {
-        /** @var UserModel $user */
         UserModel::factory()->create();
         $response = $this->getJson(route('users.show', Str::orderedUuid()->toString()));
 

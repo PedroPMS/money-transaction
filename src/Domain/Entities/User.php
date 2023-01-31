@@ -43,6 +43,7 @@ class User implements JsonSerializable
         return new self($id, $name, $email, $cpf, $password, $type);
     }
 
+    /** @return array<string, string|int> */
     public function jsonSerialize(): array
     {
         return [

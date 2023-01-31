@@ -30,6 +30,7 @@ class Wallet implements JsonSerializable
         return new self($id, $amount, $userId);
     }
 
+    /** @return array<string, string|int> */
     public function jsonSerialize(): array
     {
         return [
