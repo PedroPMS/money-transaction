@@ -39,7 +39,7 @@ return [
 
     'transaction_notifier' => [
         'base_url' => env('TRANSACTION_NOTIFIER_BASE_URL', 'http://o4d9z.mocklab.io/'),
-        'notify_url' => env('TRANSACTION_NOTIFIER_URL', '8fafdd68-a090-496f-8c9a-3442cf30dae6'),
+        'notify_url' => env('TRANSACTION_NOTIFIER_URL', 'notify'),
         'success_message' => env('TRANSACTION_NOTIFIER_MESSAGE', 'Success'),
     ],
 
