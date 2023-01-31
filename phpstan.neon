@@ -8,14 +8,15 @@ parameters:
         - src/
 
     # Level 9 is the highest level
-    level: 5
+    level: 6
 
     treatPhpDocTypesAsCertain: false
+    checkGenericClassInNonGenericObjectType: false
 
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
-#
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
+
+    excludePaths:
+        - ./tests
 #
 #    checkMissingIterableValueType: false

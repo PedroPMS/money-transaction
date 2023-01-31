@@ -27,6 +27,7 @@ final class UserResponse implements ResponseInterface
         );
     }
 
+    /** @return array<string, string|int> */
     public function jsonSerialize(): array
     {
         return [

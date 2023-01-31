@@ -4,6 +4,7 @@ namespace MoneyTransaction\Presentation\Http\Routes;
 
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Route;
+use MoneyTransaction\Presentation\Http\Controllers\Transaction\TransactionController;
 use MoneyTransaction\Presentation\Http\Controllers\User\UserController;
 
 class Router extends RouteServiceProvider
@@ -18,6 +19,10 @@ class Router extends RouteServiceProvider
             Route::post('', [UserController::class, 'store'])->name('store');
             Route::put('/{id}', [UserController::class, 'update'])->name('update');
             Route::delete('/{id}', [UserController::class, 'delete'])->name('delete');
+        });
+
+        Route::middleware(['web'])->prefix('transaction')->name('transaction.')->group(function () {
+            Route::post('', [TransactionController::class, 'store']);
         });
     }
 }

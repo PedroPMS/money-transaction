@@ -23,7 +23,6 @@ class DeleteTest extends TestCase
 
     public function testItTryToDeleteAInexistentUser()
     {
-        /** @var UserModel $user */
         UserModel::factory()->create();
         $response = $this->delete(route('users.delete', Str::orderedUuid()->toString()));
 

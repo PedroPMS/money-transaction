@@ -13,6 +13,7 @@ class UdpateUserRequest extends FormRequest
         return true;
     }
 
+    /** @return array<string, array<string|object>> */
     public function rules(): array
     {
         return [

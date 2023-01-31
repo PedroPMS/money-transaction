@@ -8,5 +8,6 @@ use Exception;
 
 abstract class DomainException extends Exception
 {
+    /** @var int */
     protected $code = 400;
 }
