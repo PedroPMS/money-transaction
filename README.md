@@ -27,7 +27,7 @@ tomar ações para cada tipo de status.
 
 A transação é registrada com o status de `created`, após isso ela vai para validação. Se for aprovada, ela continua o fluxo, caso o contrário ela vai para o fluxo de transações rejeitadas.
 
-// imagem 
+![image](https://user-images.githubusercontent.com/48099126/215920551-1ddb6bc1-fe5c-4dd4-8c1b-8e5a63705a18.png)
 
 ## Fluxo de Transações
 
@@ -41,7 +41,7 @@ Após isso, o fluxo principal se divide em dois sub fluxos que são comentados a
 
 Um transação pode ser rejeitada pelo seguintes motivos:
 
-1. O usuário pagador é um logista
+1. O usuário pagador é um logísta
 2. O usuário pagador não tem saldo suficiente
 3. O autorizador externo não aprovou a transação
 
