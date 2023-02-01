@@ -118,4 +118,4 @@ da mesma maneira que acontece hoje com as transações `rejected` e `succeeded`.
 
 *Obs: tentando implementar essas melhorias de arquitetura, fiz um novo repositório utilizando os estudos que havia feito sobre Event Driven e CQRS.*
 
-https://github.com/PedroPMS/picpay
+https://github.com/PedroPMS/picpay-simplificado
