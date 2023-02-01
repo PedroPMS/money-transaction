@@ -18,10 +18,10 @@ class TransactionValidate
     }
 
     /**
-     * @throws ShopkeeperCantStartTransactionException
      * @throws PayerDoesntHaveEnoughBalanceException
-     * @throws WalletNotFoundException
+     * @throws ShopkeeperCantStartTransactionException
      * @throws TransactionUnautorizedException
+     * @throws WalletNotFoundException
      */
     public function validateTransaction(User $payer, Transaction $transaction): void
     {
