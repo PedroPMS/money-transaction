@@ -1,4 +1,4 @@
-# Um Sistema Distribuido de Transações Monetárias
+# Sistema de Transações Monetárias
 
 ## Index
 - [Usuários](#Usuários)
@@ -11,6 +11,16 @@
 - [Endpoints](#endpoints)
 - [O que pode ser melhorado](#o-que-pode-ser-melhorado)
 
+## Objetivos
+
+Para este sistema busquei alcançar alguns princípios de qualidade de código e arquitetura para que o sistema seja de fácil manutenção e possibilite uma rápida expansão.
+Para isso foram levantados os seguintes objetivos:
+
+1. Utilização de testes para garantir o funcionamento das funções do sistema possibilitando uma manutenção mais rápida e precisa.
+2. Utilização de uma arquitetura baseada na [Onion Architecture](https://www.codeguru.com/csharp/understanding-onion-architecture/), para separar os domínios do sistema.
+3. Baixo acoplamento com o framework, libs e serviços externos. Utilizando o [Dependency Inversion Principle](https://medium.com/desenvolvendo-com-paixao/o-que-%C3%A9-solid-o-guia-completo-para-voc%C3%AA-entender-os-5-princ%C3%ADpios-da-poo-2b937b3fc530) do SOLID.  
+4. Utilização de um ambiente 100% virtualizado com Docker e Makefile para facilitar a experiência do dev.
+5. Documentação das funções do sistema e fluxos para que um novo desenvolvedor se adaptar rapidamente as regras de negócio.
 
 ## Usuários
 
