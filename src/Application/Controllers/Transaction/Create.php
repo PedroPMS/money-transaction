@@ -47,7 +47,6 @@ class Create
 
         $this->validateTransaction($payer, $transaction);
         $this->transfer->transferFunds($transaction);
-        $this->transactionUpdater->updateTransactionStatus($transaction->id, TransactionStatus::SUCCEEDED);
     }
 
     /**

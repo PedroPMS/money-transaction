@@ -1,66 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Um Sistema Distribuido de Transações Monetárias
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Index
+- [Usuários](#Usuários)
+- [Transações](#Transações)
+- [Fluxo de Transações](#Fluxo-de-Transações)
+    - [Fluxo de Transações Rejeitas](#Fluxo-de-Transações-Rejeitas)
+    - [Fluxo de Transações Aprovadas](#Fluxo-de-Transações-Aprovadas)
+- [Serviços externos indisponíveis](#Serviços-externos-indisponíveis)
+- [Como rodar o sistema](#como-rodar-o-sistema)
+- [Endpoints](#endpoints)
+- [O que pode ser melhorado](#o-que-pode-ser-melhorado)
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Usuários
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+No sistema, podem ser cadastrados usuários do tipo comum e lojista. Ambos possuem uma carteira zerada que é criada assim que o usuário é registrado.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Uma regra de negócio definiu que usuário do tipo lojista só podem receber transações. Enquanto usuários comuns podem fazer e receber. 
 
-## Learning Laravel
+Como o teste foca no domínio de transações, não me preocupei muito com o domínio de usuário, por isso só foram implementadas as funcionalidades básicas neste domínio. 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Transações
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Para manter um histórico de trasações do usuário, as transações possuem 3 status: `created`, `succeeded` e `rejected`. Dessa forma podemos verificar o histórico de um usuário e
+tomar ações para cada tipo de status.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+A transação é registrada com o status de `created`, após isso ela vai para validação. Se for aprovada, ela continua o fluxo, caso o contrário ela vai para o fluxo de transações rejeitadas.
 
-## Laravel Sponsors
+// imagem 
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Fluxo de Transações
 
-### Premium Partners
+Para iniciar uma transação é feito um request no endpoint `transaction`, esse endpoint dispara um job para a fila que vai processar essa transação.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+No início do processamento, a transação é persistida no banco, o pagador é identificado e a transação vai para validação.
 
-## Contributing
+Após isso, o fluxo principal se divide em dois sub fluxos que são comentados a seguir:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Fluxo de Transações Rejeitas
 
-## Code of Conduct
+Um transação pode ser rejeitada pelo seguintes motivos:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. O usuário pagador é um logista
+2. O usuário pagador não tem saldo suficiente
+3. O autorizador externo não aprovou a transação
 
-## Security Vulnerabilities
+Caso acontece algum desses casos, a transação é marcaada como `rejected` e é enviada uma notificação para o usuário pagador informando o motivo da rejeição.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Fluxo de Transações Aprovadas
 
-## License
+Caso a transação seja aprovada, ela vai para o fluxo de transferencia de dinheiro. Nesse fluxo, é feito o crédito e o débito da trasação e a transação é marcada como `succeded`.
+Esse processo ocorre dentro de uma transação de banco de dados, para evitar divergências nas carteiras.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Após isso é disparada um job para enviar uma notificação para o recebedor.
+
+## Serviços externos indisponíveis
+
+O fluxo precisa de serviços externos, como o autorizador e o notificador. Porém, pode ocorrer desses serviços ficarem indiponíveis.
+Nessa hora entram as ações que podem ser tomadas de acordo com o status, por exemplo:
+
+Digamos que existe uma transação com o status `created` a 5 minutos no banco de dados. Isso significa que essa transação não foi completa por algum motivo.
+Neste caso, poderiamos criar algumas tarefas agendadas para reprocessar essa transferência ou até mesmo rejeitar caso passe algum tempo específico e a transação não foi completa.
+
+Outro possível problema seria uma transação ser completada, mas a notificação não ser enviada. Nessa caso, poderiamos ter uma tarefa para reenviar essas notificação para transações com
+status `succeeded` e com `notified_at = null`.
+
+## Como rodar o sistema
+
+Requisitos básicos:
+- Docker
+- Git
+
+1. Clone o projeto
+```sh
+git clone git@github.com:PedroPMS/money-transaction.git && cd money-transaction
+```
+
+2. Execute os containers via make file
+```sh
+make build
+```
+
+3. Copie o .env
+```sh
+cp .env.example .env
+```
+
+4. Rode as migrations:
+```sh
+make migrate
+```
+
+5. Pronto! O sistema já está pronto para receber requisições.
+
+## Endpoints
+
+Após rodar o projeto, os endpoint podem ser encontrados em:
+
+http://localhost:88/docs/
+
+## O que pode ser melhorado
+
+Como se trata de um sistema crítico, seria muito interessante ter logs de tudo o que acontece relacionado as transações.
+Um abordagem interessante para isso é fazer o sistema _Event Driven_, dessa forma armazenando todos os eventos para termos um histórico
+de tudo o que acontece com uma transação. Assim, poderiamos por exmplo ter mais pontos de ação para refazer um fluxo ou tomar uma decisão diferente, 
+da mesma maneira que acontece hoje com as transações `rejected` e `succeeded`.
