@@ -115,3 +115,7 @@ Como se trata de um sistema crítico, seria muito interessante ter logs de tudo 
 Um abordagem interessante para isso é fazer o sistema _Event Driven_, dessa forma armazenando todos os eventos para termos um histórico
 de tudo o que acontece com uma transação. Assim, poderiamos por exmplo ter mais pontos de ação para refazer um fluxo ou tomar uma decisão diferente, 
 da mesma maneira que acontece hoje com as transações `rejected` e `succeeded`.
+
+*Obs: tentando implementar essas melhorias de arquitetura, fiz um novo repositório utilizando os estudo que havia feito sobre Event Driven*
+
+https://github.com/PedroPMS/picpay
