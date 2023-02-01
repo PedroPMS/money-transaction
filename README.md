@@ -116,6 +116,6 @@ Um abordagem interessante para isso é fazer o sistema _Event Driven_, dessa for
 de tudo o que acontece com uma transação. Assim, poderiamos por exmplo ter mais pontos de ação para refazer um fluxo ou tomar uma decisão diferente, 
 da mesma maneira que acontece hoje com as transações `rejected` e `succeeded`.
 
-*Obs: tentando implementar essas melhorias de arquitetura, fiz um novo repositório utilizando os estudo que havia feito sobre Event Driven*
+*Obs: tentando implementar essas melhorias de arquitetura, fiz um novo repositório utilizando os estudos que havia feito sobre Event Driven e CQRS.*
 
 https://github.com/PedroPMS/picpay
