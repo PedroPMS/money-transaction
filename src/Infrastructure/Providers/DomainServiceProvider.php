@@ -20,6 +20,9 @@ use MoneyTransaction\Infrastructure\Repositories\Eloquent\WalletEloquentReposito
 use MoneyTransaction\Shared\Domain\UuidGeneratorInterface;
 use MoneyTransaction\Shared\Infrastructure\RamseyUuidGenerator;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class DomainServiceProvider extends ServiceProvider
 {
     public function register()
